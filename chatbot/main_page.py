@@ -170,7 +170,18 @@ def main():
             index=0  # 기본 선택값: '갑상선'
         )
         uploaded_file = st.file_uploader('**2) 이미지 업로드**', type=['jpg', 'bmp'])
-
+        ## 사이드바 하단 깃허브 링크
+        st.markdown(
+            """
+            <div style="position: fixed; bottom: 30px; left: 20px; width: 250px;">
+                <hr style="border: 0; border-top: 1px solid #e0e0e0; margin-bottom: 15px;">
+                <a href="https://github.com/Kim-Minhee/MEGA" target="_blank" style="text-decoration: none; color: #555555; font-weight: bold;">
+                    🐙 MEGA GitHub Repository
+                </a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
     
     # 소개/설명
     st.header('의료 진단 보조 챗봇', divider='gray') # divider 옵션: blue, green, orange, red, violet, gray, grey, rainbow
