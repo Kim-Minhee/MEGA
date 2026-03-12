@@ -1,8 +1,18 @@
 # 🏥 MEGA: AI 의료 진단 보조 및 초진기록지 자동 생성 챗봇
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://mega-medical-ai.streamlit.app)
+
 ## 💡 프로젝트 소개
 **MEGA(Medical Expert Generative Assistant)** 는 의료진의 진료 효율성을 높이기 위해 개발된 AI 기반 의료 진단 보조 챗봇입니다. 
 환자의 뇌 MRI 및 갑상선 초음파 이미지를 AI 모델로 분석하여 병변을 탐지하고, 환자의 문진표 데이터를 결합하여 **최신 LLM(Gemini)이 전문적인 초진기록지 초안을 자동으로 작성**해 줍니다.
+
+## 📸 실행 예시 (Demo)
+### 🏠 메인 시작 화면
+![메인 시작 화면](./docs/demo_start.png)
+### 🧠 뇌 MRI 분석 및 초진기록지 생성
+![뇌 MRI 실행 화면](./docs/demo_brain.png)
+### 🦋 갑상선 초음파 분류 및 초진기록지 생성
+![갑상선 실행 화면](./docs/demo_thyroid.png)
 
 ## ✨ 주요 기능
 1. **🧠 뇌 MRI 뇌종양 객체 탐지 (Object Detection)**
@@ -29,11 +39,14 @@
  ┃ ┣ 📜main_page.py        # 메인 UI 및 실행 파일
  ┃ ┣ 📜image_model.py      # 비전 모델(YOLO, ConvNeXt) 로드 및 예측 로직
  ┃ ┗ 📜assistant_mega.py   # Gemini API 연동 및 초진기록지 생성 로직
+ ┣ 📂docs                  # README 실행 예시용 캡처 이미지 폴더
  ┣ 📂model
  ┃ ┗ 📂final               # 서비스 배포용 최종 가중치 파일 (.pt, .h5)
  ┣ 📂sample_images         # 🧪 바로 테스트해 볼 수 있는 샘플 이미지 제공!
- ┣ 📜requirements.txt      # 프로젝트 의존성 패키지 목록
- ┗ 📜README.md
+ ┣ 📜packages.txt          # 리눅스 환경(Streamlit Cloud) OpenCV 구동용 시스템 패키지
+ ┣ 📜requirements.txt      # 프로젝트 의존성 파이썬 패키지 목록
+ ┣ 📜.gitignore            # 깃허브 업로드 제외 파일 설정
+ ┗ 📜README.md             # 프로젝트 소개 및 가이드 문서
 ```
 
 ## 🚀 설치 및 실행 방법 (How to Run)
