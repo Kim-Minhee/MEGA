@@ -11,8 +11,8 @@ import torch
 import torchvision.transforms as T
 from ultralytics import YOLO
 
-MODEL_PATH = 'model/250218_base-model_ep-30.h5'
-YOLO_PATH = 'model/final/250319_yolov8_ep100/weights/best.pt'
+MODEL_PATH = 'model/final/250218_base-model_ep-30.h5'
+YOLO_PATH = 'model/final/250319_yolov8_ep100_best.pt'
 
 @st.cache_resource
 def load_model(diagnosis_type):
@@ -114,14 +114,15 @@ def predict_image(image, model, diagnosis_type):
         detections = results[0].boxes
 
         if detections is None or len(detections)==0:
-            return 0.0, '정상', preprocessed_image
+            return 100.0, '정상', preprocessed_image
 
         # 클래스 기반 판단
         boxes = detections.xyxy.cpu().numpy()
         scores = detections.conf.cpu().numpy()
         classes = detections.cls.cpu().numpy().astype(int)
 
-        tumor_scores = [s for s, c in zip(scores, classes) if c == 1]  # 뇌종양 클래스 ID=1
+        # tumor_scores = [s for s, c in zip(scores, classes) if c == 1]  # 뇌종양 클래스 ID=1
+        tumor_scores = scores # 클래스 ID(0이든 1이든)에 상관없이 박스가 쳐졌다면 모두 종양 점수로 취급!
 
         # 시각화 이미지
         visualized = results[0].plot()

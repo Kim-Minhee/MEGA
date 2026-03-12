@@ -23,9 +23,9 @@ def init_session_state():
     if 'form_data' not in st.session_state: # 문진표 기본값
         st.session_state['form_data'] = {
             'gender': '남',
-            'age': 30,
-            'height': 170.0,
-            'weight': 70.0,
+            'age': 40,
+            'height': 180.0,
+            'weight': 80.0,
             'conditions_self': [],
             'conditions_family': [],
             'smoking': {
@@ -52,6 +52,9 @@ def init_session_state():
                 }
             }
         }
+    
+    if 'diagnosis_type' not in st.session_state:
+        st.session_state.diagnosis_type = 0 # 0: 갑상선 초음파, 1: 뇌 MRI
 
 
 ## 문진표
@@ -154,22 +157,29 @@ def main():
     )
 
     init_session_state()
-    model = im.load_model()
+    # model = im.load_model()
     gemini = am.load_gemini()
 
     # 사이드바
     with st.sidebar:
-        st.header('파일 업로드')
-        uploaded_file = st.file_uploader('**JPG/BMP** 이미지를 업로드하세요.', type=['jpg', 'bmp'])
+        st.header('이미지 파일 업로드')
+        # 이미지 종류 선택
+        image_type = st.radio(
+            '**1) 진단 종류 선택**',
+            options=['갑상선 초음파', '뇌 MRI'],
+            index=0  # 기본 선택값: '갑상선'
+        )
+        uploaded_file = st.file_uploader('**2) 이미지 업로드**', type=['jpg', 'bmp'])
+
     
     # 소개/설명
-    st.header('진단 보조 챗봇', divider='gray') # divider 옵션: blue, green, orange, red, violet, gray, grey, rainbow
+    st.header('의료 진단 보조 챗봇', divider='gray') # divider 옵션: blue, green, orange, red, violet, gray, grey, rainbow
     st.title('MEGA')
     with st.container(border=False):
         col_intro, col_guide = st.columns(2)
         with col_intro:
             st.write('''
-            👋 안녕하세요! 진단 보조 챗봇 **메가**입니다.
+            👋 안녕하세요! 의료 진단 보조 챗봇 **메가**입니다.
 
             문진표 작성과 이미지 파일을 업로드해주시면 초진기록지 작성을 도와드리겠습니다!
             ''')
@@ -177,7 +187,7 @@ def main():
             st.write('''
             💡 **사용 방법**
             1. 하단의 **문진표**를 작성해주세요.
-            2. 진단이 필요한 **의료 이미지 파일**(.jpg/.bmp)을 사이드바에 업로드해주세요.
+            2. 진단이 필요한 **의료 이미지 파일**을 사이드바에서 업로드해주세요.
             3. 업로드가 완료되면 **초진기록지 초안**을 작성해드립니다.
             ''')
 
@@ -188,25 +198,36 @@ def main():
     # 이미지 업로드 시
     if uploaded_file:
         image = Image.open(uploaded_file)
+        # st.image(image, caption='업로드된 원본 이미지', use_column_width=True) # (선택) 분석 전 원본 이미지만 먼저 보여주기
+    
+        if st.sidebar.button("진단 분석 시작하기 🚀"):
+            with st.spinner("AI가 이미지를 분석하고 초진기록지를 작성 중입니다..."): # (선택) 로딩 애니메이션
 
-        # 모델 예측
-        prob, label = im.predict_image(image, model)
+                # 모델 예측
+                st.session_state['diagnosis_type'] = 0 if image_type=='갑상선 초음파' else 1
+                model = im.load_model(st.session_state.diagnosis_type)
+                if st.session_state['diagnosis_type'] == 0:
+                    prob, label = im.predict_image(image, model, st.session_state.diagnosis_type)
+                else:
+                    prob, label, visualized_image = im.predict_image(image, model, st.session_state.diagnosis_type)
 
-        # 초진기록지 초안
-        medical_record = am.generate_medical_record(gemini, st.session_state.form_data, prob, label)
+                # 초진기록지 초안
+                medical_record = am.generate_medical_record(gemini, st.session_state.form_data, st.session_state.diagnosis_type, prob, label)
 
-        col_image, col_result = st.columns([1, 2])
-        with col_image:
-            st.image(image, caption='분석된 갑상선 초음파 이미지', use_container_width=True)
-        with col_result:
-            with st.container(border=True):
-                st.subheader(f'{prob}%의 확률로 {label}입니다.')
-                st.write(medical_record)
+                col_image, col_result = st.columns([1, 2])
+                with col_image:
+                    if st.session_state['diagnosis_type'] == 0:
+                        st.image(image, caption='분석된 갑상선 초음파 이미지', use_column_width=True)
+                    else:
+                        st.image(visualized_image, caption='분석된 뇌 MRI 이미지', use_column_width=True)
+                with col_result:
+                    with st.container(border=True):
+                        st.subheader(f'{prob}%의 확률로 {label}입니다.')
+                        st.write(medical_record)
 
     
     ## 챗봇 ##
     
-
     # 메시지 기록
     for message in st.session_state.messages:
         with st.chat_message(message['role']):
