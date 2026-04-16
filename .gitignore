@@ -1,0 +1,33 @@
+# Secrets
+.env
+*.env
+
+# Heavy Data
+dataset/
+data/
+
+# Heavy Models
+*.pth
+model/250319_yolov8_ep50/
+model/250319_yolov8_ep100/
+
+# Jupyter Notebooks & Research
+practice/
+real/
+*.ipynb
+
+# Documents (발표 자료 등 문서 파일)
+*.pdf
+*.pptx
+
+# Python & Virtual Environment
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
