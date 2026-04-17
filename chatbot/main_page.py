@@ -1,4 +1,8 @@
 import io, os
+if not os.path.exists('/tmp/opencv_fixed.txt'):
+    os.system("pip uninstall -y opencv-python opencv-python-headless")
+    os.system("pip install opencv-python-headless")
+    os.system("touch /tmp/opencv_fixed.txt")
 from dotenv import load_dotenv
 from PIL import Image
 
