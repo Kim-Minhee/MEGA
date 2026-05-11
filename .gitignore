@@ -27,6 +27,7 @@ __pycache__/
 .venv/
 venv/
 env/
+mega/
 
 # OS
 .DS_Store
