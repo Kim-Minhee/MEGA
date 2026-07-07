@@ -1,6 +1,7 @@
 # 🏥 MEGA: AI 의료 진단 보조 및 초진기록지 자동 생성 챗봇
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://mega-medical-ai.streamlit.app)
+[![Hugging Face Spaces](https://img.shields.io/badge/🤗%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/minhee9488/MEGA)
 
 ## 💡 프로젝트 소개
 **MEGA(Medical Expert Generative Assistant)** 는 의료진의 진료 효율성을 높이기 위해 개발된 AI 기반 의료 진단 보조 챗봇입니다. 
